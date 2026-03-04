@@ -3,7 +3,10 @@
 const nodemailer = require('nodemailer')
 const MailModel = require('../models/mail.model')
 const Site_Link = process.env.SITE_LINK
+const Unsub_Link = process.env.UNSUB_LINK
 const Email_Provider = process.env.CONTACT_EMAIL_USER
+
+const path = require("path")
 
 
 const sendContactMail = async (req, res) => {
@@ -37,29 +40,57 @@ const sendContactMail = async (req, res) => {
             subject: `Testing Mail Server from ${mailData.userName}`,
             html:
                 `
-                <body>
-                    <h1>This just a test</h1>
-                    <p>We are testing the contact form on the site.  Feel free to ignore this email</p>
-                    <a href=${Site_Link}>TestMail BeeDev Hosting</a>
-                    <table>
-                        <tr>
-                            <th>Email From:</th>
-                            <td>${mailData.userName} at ${mailData.contact}</td>
+                <body style="background-color: #f5f5f5; margin: 0; padding: 0; width: 100%">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse: collapse; max-width: 1000px; margin: auto;">
+                        <tr style="border-bottom: 1px solid #5c4033a6; padding: 5px;">
+                            <td>
+                                <a href=${Site_Link}>
+                                    <img src="cid:logoImage" alt="A.G. Reese & Associates" style="width: 200px;">
+                                </a>
+                            </td>
+                            <td style="text-align: right;">
+                                <button style="padding: 12px 24px; border-radius: 20px; width: 200px; background-color: #2d5016;">
+                                    <a href=${Site_Link} style="color: white; font-weight: 700; text-decoration: none;">Visit us</a>
+                                </button>
+                            </td>
                         </tr>
                         <tr>
-                            <th>Subject</th>
-                            <td>${mailData.subject}</td>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <th style="text-align: left; padding-right: 10px;">Email From:</th>
+                                        <td style="text-align: left;">${mailData.userName} at ${mailData.contact}</td>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align: left;">Subject:</th>
+                                        <td style="text-align: left;">${mailData.subject}</td>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align: left;">Message:</th>
+                                        <td style="text-align: left;">${mailData.message}</td>
+                                    </tr>
+                                </table>
+                            </td>
                         </tr>
                         <tr>
-                            <th>Message</th>
-                            <td>${mailData.message}</td>
+                            <td colspan="2"><p>To ensure our message find their way into your inbox, please make sure to add our mailing provider <a href="#">${Email_Provider}</a> to your mailing list. </p></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><p>This email was intended for ${mailData.userName} (${mailData.contact}).  If you are not the intended recipient of this email, please notify the sender immediately by replying to this message and delete this email from your inbox.  Any unauthorized use, disclosure, or distribution of this email is prohibited.  Thank you for your understanding</p></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><p>If you wish to unsubscribe from future emails please visit <a href="#">${Unsub_Link}</a> to have your information removed</p></td>
                         </tr>
                     </table>
-                    <p>To ensure our message find their way into your inbox, please make sure to add our mailing provider <a href="#">${Email_Provider}</a> to your mailing list. </p>
-                    <p>This email was intended for ${mailData.userName} (${mailData.contact}).  If you are not the intended recipient of this email, please notify the sender immediately by replying to this message and delete this email from your inbox.  Any unauthorized use, disclosure, or distribution of this email is prohibited.  Thank you for your understanding</p>
-                    <p>If you wish to unsubscribe from future emails please visit <a href="#">${Site_Link}</a> to have your information removed</p>
                 </body>
-                `
+                `,
+                attachments: [
+                    {
+                        filename: "AG_favicon.png",
+                        path: path.join(__dirname, "../assets/AG_favicon.png"),
+                        cid: "logoImage"
+                    }
+                ]
         }
         await transporter.sendMail(mailOptions)
         console.log(mailData)
