@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer')
 const MailModel = require('../models/mail.model')
 const Site_Link = process.env.SITE_LINK
 const Unsub_Link = process.env.UNSUB_LINK
-const Email_Provider = process.env.CONTACT_EMAIL_USER
+const Email_Provider = process.env.MAIN_EMAIL_USER
 
 const path = require("path")
 
@@ -37,7 +37,7 @@ const sendContactMail = async (req, res) => {
             from: process.env.CONTACT_EMAIL_USER,
             to: process.env.CONTACT_EMAIL_USER,
             bcc: bccList.length ? bccList : undefined,
-            subject: `Testing Mail Server from ${mailData.userName}`,
+            subject: `Message Confirmation - A.G. Reese & Associates - ${mailData.userName}`,
             html:
                 `
                 <body style="background-color: #f5f5f5; margin: 0; padding: 0; width: 100%">
@@ -45,7 +45,7 @@ const sendContactMail = async (req, res) => {
                         <tr style="border-bottom: 1px solid #5c4033a6; padding: 5px;">
                             <td>
                                 <a href=${Site_Link}>
-                                    <img src="cid:logoImage" alt="A.G. Reese & Associates" style="width: 200px;">
+                                    A.G. Reese & Associates
                                 </a>
                             </td>
                             <td style="text-align: right;">
@@ -83,14 +83,7 @@ const sendContactMail = async (req, res) => {
                         </tr>
                     </table>
                 </body>
-                `,
-                attachments: [
-                    {
-                        filename: "AG_favicon.png",
-                        path: path.join(__dirname, "../assets/AG_favicon.png"),
-                        cid: "logoImage"
-                    }
-                ]
+                `
         }
         await transporter.sendMail(mailOptions)
         console.log(mailData)
