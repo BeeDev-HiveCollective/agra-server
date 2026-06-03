@@ -1,7 +1,6 @@
-
-
 const nodemailer = require('nodemailer')
 const MailModel = require('../models/mail.model')
+
 const Site_Link = process.env.SITE_LINK
 const Unsub_Link = process.env.UNSUB_LINK
 const Email_Provider = process.env.MAIN_EMAIL_USER
@@ -90,7 +89,7 @@ const sendContactMail = async (req, res) => {
         return res.status(200).json({message: "Sent", info: mailData})
     } catch(error) {
         console.error("Failed", error)
-        return res.status(500).json({message: "Failed"})
+        return res.status(500).json({message: `Failed to send email: ${ error.message}`})
     }
 }
 
