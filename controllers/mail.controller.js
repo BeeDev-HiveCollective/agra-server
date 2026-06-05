@@ -10,13 +10,13 @@ const path = require("path")
 
 const sendContactMail = async (req, res) => {
     const { userName, contact, subject, message } = req.body
-    
+
     const mailData = new MailModel({ userName, contact, subject, message })
 
     try {
         if (!process.env.EMAIL_HOST || !process.env.CONTACT_EMAIL_USER || !process.env.CONTACT_EMAIL_PASS) {
             return res.status(500).json({ message: "Server email config missing" });
-}
+        }
         const transporter = nodemailer.createTransport({
             host: process.env.EMAIL_HOST,
             port: 465,
@@ -33,8 +33,13 @@ const sendContactMail = async (req, res) => {
         if (mailData.contact && mailData.contact.includes("@")) bccList.push(mailData.contact)
 
         const mailOptions = {
-            from: process.env.CONTACT_EMAIL_USER,
-            to: process.env.CONTACT_EMAIL_USER,
+            // from: `${process.env.CONTACT_FROM} <${process.env.CONTACT_EMAIL_USER}>`,
+            from: {
+                name: "A.G. Reese & Associates",
+                address: process.env.CONTACT_EMAIL_USER
+            },
+            to: mailData.contact,
+            replyTo: process.env.CONTACT_FROM,
             bcc: bccList.length ? bccList : undefined,
             subject: `Message Confirmation - A.G. Reese & Associates - ${mailData.userName}`,
             html:
@@ -86,10 +91,10 @@ const sendContactMail = async (req, res) => {
         }
         await transporter.sendMail(mailOptions)
         console.log(mailData)
-        return res.status(200).json({message: "Sent", info: mailData})
-    } catch(error) {
+        return res.status(200).json({ message: "Sent", info: mailData })
+    } catch (error) {
         console.error("Failed", error)
-        return res.status(500).json({message: `Failed to send email: ${ error.message}`})
+        return res.status(500).json({ message: `Failed to send email: ${error.message}` })
     }
 }
 
