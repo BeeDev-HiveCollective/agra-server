@@ -7,7 +7,7 @@ PassengerStartupFile server.js
 # DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
 
 <IfModule mod_headers.c>
-  Header always set Access-Control-Allow-Origin "https://hive-11.beedev-services.com"
+  Header always set Access-Control-Allow-Origin "https://agreese.com"
   Header always set Vary "Origin"
   Header always set Access-Control-Allow-Methods "GET,POST,OPTIONS"
   Header always set Access-Control-Allow-Headers "Content-Type, Authorization, Accept"
